@@ -10,7 +10,7 @@ export const SendDialog = ({ item, onHide }) => {
     if (item) {
       console.log('send', item);
       setSendLog('');
-      const linesToSend = item.script.split(/\s+/);
+      const linesToSend = item.script.split(/\n+/);
       const addToSendLog = string => setSendLog(sendLog => sendLog + string);
       const sendNextLine = async () => {
         if (linesToSend.length) {
@@ -25,8 +25,8 @@ export const SendDialog = ({ item, onHide }) => {
               body: JSON.stringify({ message: line })
             });
             if (response.status > 299) {
-              const text = await response.text();
-              addToSendLog(`API error ${response.status}: ${text}\n`);
+              const { response } = await response.json();
+              addToSendLog(`API error ${response.status}: ${response}\n`);
             } else {
               const result = await response.text();
               addToSendLog(result + '\n');

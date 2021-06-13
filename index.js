@@ -8,6 +8,7 @@ const Readline = SerialPort.parsers.Readline
 const parser = serialport.pipe(new Readline({delimiter: '\r'}));
 
 app.use(express.json());
+app.use(express.static('client/build'))
 
 app.post('/api/send', (req, res) => {
   const { message } = req.body;
