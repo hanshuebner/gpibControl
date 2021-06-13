@@ -11,7 +11,7 @@ export const ScriptView = ({ index, item, onChange, onDelete, onSend }) => {
         if (item.title || item.script) {
             confirmPopup({
                 target: event.currentTarget,
-                message: 'Are you sure you want to proceed?',
+                message: 'Do you want to delete this script?',
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => onDelete(index)
             });
@@ -19,6 +19,7 @@ export const ScriptView = ({ index, item, onChange, onDelete, onSend }) => {
             onDelete(index);
         }
     }
+    const editItem = () => {}
 
     return <Card>
             <div className="p-fluid">
@@ -34,8 +35,8 @@ export const ScriptView = ({ index, item, onChange, onDelete, onSend }) => {
                 </div>
             </div>
             <div className="p-field">
-                <Button icon="pi pi-send" label="Send" disabled={!item.script} onClick={() => onSend(index)}/>
-                <Button icon="pi pi-trash" label="Delete" onClick={deleteItem}/>
+                <Button icon="pi pi-play" title="Run script" disabled={!item.script} onClick={() => onSend(index)}/>
+                <Button icon="pi pi-trash" title="Delete script" onClick={deleteItem}/>
             </div>
         </Card>;
 }
