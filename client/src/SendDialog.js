@@ -25,8 +25,8 @@ export const SendDialog = ({ item, onHide }) => {
               body: JSON.stringify({ message: line })
             });
             if (response.status > 299) {
-              const { response } = await response.json();
-              addToSendLog(`API error ${response.status}: ${response}\n`);
+              const text = await response.text();
+              addToSendLog(`API error ${response.status}: ${text}\n`);
             } else {
               const result = await response.text();
               addToSendLog(result + '\n');

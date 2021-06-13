@@ -50,10 +50,12 @@ function App() {
     <div className="App">
       <div className="content-section">
         <h1>GPIB Script Sender</h1>
-        {
-          items.map((item, index) => <ScriptView key={index} index={index} item={item}
-                                                 onChange={changeItem} onDelete={deleteItem} onSend={sendItem}/>)
-        }
+        <div className="p-grid">
+          {
+            items.map((item, index) => <ScriptView className="p-col-3" key={index} index={index} item={item}
+                                                   onChange={changeItem} onDelete={deleteItem} onSend={sendItem}/>)
+          }
+        </div>
         <SendDialog item={itemToSend} onHide={() => setItemToSend(null)}/>
       </div>
       <Button icon="pi pi-plus" onClick={newScript}/>
