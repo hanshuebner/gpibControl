@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 
 import { confirmPopup } from 'primereact/confirmpopup';
 import { Card } from 'primereact/card';
@@ -6,68 +5,37 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
 
-export const ScriptView = ({ id, onChange }) => {
+export const ScriptView = ({ index, item, onChange, onDelete, onSend }) => {
 
-    const [title, setTitle] = useState('');
-    const [script, setScript] = useState('');
-
-    useEffect(() => {
-        const saved = localStorage.getItem(id);
-        if (saved) {
-            console.log('loading from localStorage');
-            let { title, script } = JSON.parse(saved);
-            setTitle(title);
-            setScript(script);
-        }
-    }, [id, setTitle, setScript]);
-
-    useEffect(() => {
-        if (title || script) {
-            console.log('saving');
-            localStorage.setItem(id, JSON.stringify({ title, script }));
-        }
-        onChange();
-    }, [id, title, script, onChange]);
-
-    const send = async () => {
-        for (const line of script.split(/\n/)) {
-            const response = await fetch('/api/send', { method: 'POST', body: line });
-            const result = await response.text();
-            console.log(result);
-        }
-    }
-
-    const deleteScript = event => {
-        const doDelete = () => {
-            localStorage.removeItem(id);
-            onChange();
-        }
-        if (title || script) {
+    const deleteItem = event => {
+        if (item.title || item.script) {
             confirmPopup({
                 target: event.currentTarget,
                 message: 'Are you sure you want to proceed?',
                 icon: 'pi pi-exclamation-triangle',
-                accept: doDelete
+                accept: () => onDelete(index)
             });
         } else {
-            doDelete();
+            onDelete(index);
         }
     }
 
     return <Card>
             <div className="p-fluid">
                 <div className="p-field">
-                    <label htmlFor="title">Title</label>
-                    <InputText id="title" value={title} onChange={e => setTitle(e.target.value)}/>
+                    <label htmlFor={`title-${item.id}`}>Title</label>
+                    <InputText id={`title-${item.id}`} value={item.title}
+                               onChange={e => onChange(index, {...item, title: e.target.value})}/>
                 </div>
                 <div className="p-field">
-                    <label htmlFor="script">Script</label>
-                    <InputTextarea rows={script.split(/\n/).length} id="script" value={script} onChange={e => setScript(e.target.value)}/>
+                    <label htmlFor={`script-${item.id}`}>Script</label>
+                    <InputTextarea rows={item.script.split(/\n/).length} id={`script-${item.id}`} value={item.script}
+                                   onChange={e => onChange(index, {...item, script: e.target.value})}/>
                 </div>
             </div>
             <div className="p-field">
-                <Button icon="pi pi-send" label="Send" onClick={send}/>
-                <Button icon="pi pi-trash" label="Delete" onClick={deleteScript}/>
+                <Button icon="pi pi-send" label="Send" disabled={!item.script} onClick={() => onSend(index)}/>
+                <Button icon="pi pi-trash" label="Delete" onClick={deleteItem}/>
             </div>
         </Card>;
 }
